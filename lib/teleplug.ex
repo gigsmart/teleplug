@@ -44,8 +44,9 @@ defmodule Teleplug do
   def init(opts), do: opts
 
   @impl true
-  def call(conn, _opts) do
-    :otel_propagator_text_map.extract(conn.req_headers)
+  def call(conn, opts) do
+    otel_propagator = Keyword.get(opts, :otel_propagator, :otel_propagator_text_map)
+    otel_propagator.extract(conn.req_headers)
 
     attributes =
       http_common_attributes(conn) ++
